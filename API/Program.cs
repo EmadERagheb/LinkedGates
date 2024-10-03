@@ -12,6 +12,7 @@ namespace API
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddApplicationServices(builder.Configuration);
             builder.Services.AddSwaggerDocumentation();
 
 
