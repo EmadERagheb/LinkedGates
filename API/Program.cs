@@ -1,4 +1,6 @@
 
+using API.Extensions;
+
 namespace API
 {
     public class Program
@@ -10,21 +12,18 @@ namespace API
             // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerDocumentation();
+
 
             var app = builder.Build();
+            app.UseStaticFiles();
+            //app.UseMiddleware<ExceptionMiddleWare>();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+            app.UserSwaggerDocumentation();
+            app.UseCors();
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
