@@ -1,0 +1,65 @@
+[
+  {
+    "CategoryId": 1,
+    "PropertyId": 2
+  },
+  {
+    "CategoryId": 1,
+    "PropertyId": 7
+  },
+  {
+    "CategoryId": 1,
+    "PropertyId": 3
+  },
+  {
+    "CategoryId": 2,
+    "PropertyId": 4
+  },
+  {
+    "CategoryId": 2,
+    "PropertyId": 1
+  },
+  {
+    "CategoryId": 2,
+    "PropertyId": 14
+  },
+  {
+    "CategoryId": 2,
+    "PropertyId": 15
+  },
+  {
+    "CategoryId": 2,
+    "PropertyId": 7
+  },
+  {
+    "CategoryId": 2,
+    "PropertyId": 3
+  },
+  {
+    "CategoryId": 2,
+    "PropertyId": 9
+  },
+  {
+    "CategoryId": 5,
+    "PropertyId": 10
+  },
+  {
+    "CategoryId": 5,
+    "PropertyId": 13
+
+  },
+  {
+    "CategoryId": 5,
+    "PropertyId": 7
+  },
+  {
+    "CategoryId": 5,
+    "PropertyId": 3
+  },
+  {
+    "CategoryId": 5,
+    "PropertyId": 5
+  }
+
+
+]

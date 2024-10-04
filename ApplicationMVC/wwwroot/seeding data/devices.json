@@ -1,0 +1,101 @@
+[
+  {
+    "Name": "HP Desktop 1190 ",
+    "SerialNumber": "334cdh32-1",
+    "CategoryId": 2
+  },
+  {
+    "Name": "Dell Inspiron 3880",
+    "SerialNumber": "DL456789-A",
+    "CategoryId": 2,
+    "Memo": "Office workstation, 3-year warranty expires 2025"
+  },
+  {
+    "Name": "Lenovo IdeaCentre 510A",
+    "SerialNumber": "LN789012-B",
+    "CategoryId": 2,
+    "Memo": "Design department, upgraded RAM to 32GB"
+  },
+  {
+    "Name": "Apple iMac 27-inch",
+    "SerialNumber": "AP234567-C",
+    "CategoryId": 2,
+    "Memo": "Marketing team, includes Adobe Creative Suite license"
+  },
+  {
+    "Name": "Acer Aspire TC-895",
+    "SerialNumber": "AC567890-D",
+    "CategoryId": 2,
+    "Memo": "Reception area, configured for visitor check-in system"
+  },
+  {
+    "Name": "ASUS ROG Strix G15CE",
+    "SerialNumber": "AS901234-E",
+    "CategoryId": 2,
+    "Memo": "IT department, used for software testing and development"
+  },
+  {
+    "Name": "HP LaserJet Pro M404dn",
+    "SerialNumber": "HP123456-P",
+    "CategoryId": 1,
+    "Memo": "Accounting department, high-volume b&w printing"
+  },
+  {
+    "Name": "Epson EcoTank ET-4760",
+    "SerialNumber": "EP789012-Q",
+    "CategoryId": 1,
+    "Memo": "Marketing team, used for proofing color materials"
+  },
+  {
+    "Name": "Brother MFC-L8900CDW",
+    "SerialNumber": "BR345678-R",
+    "CategoryId": 1,
+    "Memo": "Main office multi-function printer, needs regular maintenance"
+  },
+  {
+    "Name": "Canon PIXMA TR8620",
+    "SerialNumber": "CN901234-S",
+    "CategoryId": 1,
+    "Memo": "Reception area, used for scanning and occasional photo printing"
+  },
+  {
+    "Name": "Xerox VersaLink C405",
+    "SerialNumber": "XE567890-T",
+    "CategoryId": 1,
+    "Memo": "HR department, secure printing enabled for confidential documents"
+  },
+  {
+    "Name": "Dell UltraSharp U2719D",
+    "SerialNumber": "DL987654-M",
+    "CategoryId": 3,
+    "Memo": "Design team, color-calibrated for graphic work"
+  },
+  {
+    "Name": "LG 34WN80C-B UltraWide",
+    "SerialNumber": "LG654321-N",
+    "CategoryId": 3,
+    "Memo": "Developer workstation, curved screen for improved productivity"
+  },
+  {
+    "Name": "ASUS ProArt PA32UCX-PK",
+    "SerialNumber": "AS246810-O",
+    "CategoryId": 3,
+    "Memo": "Video editing suite, 4K HDR professional monitor"
+  },
+  {
+    "Name": "ViewSonic VA2759-SMH",
+    "SerialNumber": "VS135790-P",
+    "CategoryId": 3,
+    "Memo": "General office use, energy-efficient IPS panel"
+  },
+  {
+    "Name": "BenQ PD3200U",
+    "SerialNumber": "BQ024680-Q",
+    "CategoryId": 3,
+    "Memo": "CAD/CAM station, dual-view mode for 3D modeling"
+  }
+
+
+
+
+]

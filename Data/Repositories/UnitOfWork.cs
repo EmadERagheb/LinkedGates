@@ -23,15 +23,15 @@ namespace Data.Repositories
         {
             if (_repositorise is null) _repositorise = new Hashtable();
             var type = typeof(TEntity);
-            var contextType = typeof(TEntity);
+            var contextType = typeof(TContext);
             if (!_repositorise.ContainsKey($"{contextType.Name} - {type.Name}"))
             {
-                var repositoryType = typeof(GenericRepository<TEntity, TContext>);
-                var repositoryInstance = Activator.CreateInstance(repositoryType, context, mapper);
+                var repositoryType = typeof(GenericRepository<,>);
+                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(type,contextType),context,mapper);
                 _repositorise[$"{contextType.Name} - {type.Name}"] = repositoryInstance;
 
             }
-            return (IGenericRepository<TEntity, TContext>)_repositorise[$"{contextType} - {type}"]!;
+            return (IGenericRepository<TEntity, TContext>)_repositorise[$"{contextType.Name} - {type.Name}"]!;
         }
     }
 }

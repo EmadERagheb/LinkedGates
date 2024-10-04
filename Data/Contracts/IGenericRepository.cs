@@ -9,7 +9,7 @@ namespace Data.Contracts
     {
         Task<IEnumerable<TResult>> GetAllAsync<TResult>(int pageNumber, int pageSize, Expression<Func<T, bool>>? filter, Expression<Func<T, object>>? order, params string[] properties);
 
-        Task<IEnumerable<TResult>> GetAllAsync<TResult>(Expression<Func<T, bool>>? filter, bool tracked = false, params string[] properties);
+        Task<IEnumerable<TResult>> GetAllAsync<TResult>(Expression<Func<T, bool>>? filter=default, bool tracked = false, params string[] properties);
         Task<int> GetCountAsync(Expression<Func<T, bool>>? filter);
 
         Task<bool> IsExistAsync(Expression<Func<T, bool>> filter);

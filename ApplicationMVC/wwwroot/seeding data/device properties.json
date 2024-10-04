@@ -1,0 +1,57 @@
+[
+  {
+    "DeviceId": 1,
+    "PropertyId": 1,
+    "Value": "1TB"
+  },
+  {
+    "DeviceId": 1,
+    "PropertyId": 3,
+    "Value": "HP"
+  },
+  {
+    "DeviceId": 2,
+    "PropertyId": 1,
+    "Value": "512GB"
+  },
+  {
+    "DeviceId": 2,
+    "PropertyId": 3,
+    "Value": "Dell"
+  },
+  {
+    "DeviceId": 2,
+    "PropertyId": 4,
+    "Value": "Intel i7-1165G7"
+  },
+  {
+    "DeviceId": 3,
+    "PropertyId": 3,
+    "Value": "Lenovo"
+  },
+  {
+    "DeviceId": 3,
+    "PropertyId": 15,
+    "Value": "1920x1080"
+  },
+  {
+    "DeviceId": 4,
+    "PropertyId": 3,
+    "Value": "Apple"
+  },
+  {
+    "DeviceId": 4,
+    "PropertyId": 14,
+    "Value": "16GB"
+  },
+  {
+    "DeviceId": 5,
+    "PropertyId": 3,
+    "Value": "Acer"
+  },
+  {
+    "DeviceId": 5,
+    "PropertyId": 15,
+    "Value": "1920x1080"
+  }
+]

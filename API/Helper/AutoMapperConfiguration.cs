@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
 
-namespace API.Helper
-{
-    public class AutoMapperConfiguration:Profile
-    {
-    }
-}
+//namespace API.Helper
+//{
+//    public class AutoMapperConfiguration:Profile
+//    {
+//    }
+//}
