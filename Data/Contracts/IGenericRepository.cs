@@ -7,10 +7,10 @@ namespace Data.Contracts
 {
     public interface IGenericRepository<T, TContext> where T : BaseDomainModel where TContext : DbContext
     {
-        Task<IEnumerable<TResult>> GetAllAsync<TResult>(int pageNumber, int pageSize, Expression<Func<T, bool>>? filter, Expression<Func<T, object>>? order, params string[] properties);
+        Task<IEnumerable<TResult>> GetAllAsync<TResult>(int pageNumber, int pageSize, Expression<Func<T, bool>>? filter=default, Expression<Func<T, object>>? order = default, params string[] properties);
 
         Task<IEnumerable<TResult>> GetAllAsync<TResult>(Expression<Func<T, bool>>? filter=default, bool tracked = false, params string[] properties);
-        Task<int> GetCountAsync(Expression<Func<T, bool>>? filter);
+        Task<int> GetCountAsync(Expression<Func<T, bool>>? filter=default);
 
         Task<bool> IsExistAsync(Expression<Func<T, bool>> filter);
 

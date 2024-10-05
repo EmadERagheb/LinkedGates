@@ -40,6 +40,43 @@
     "PropertyId": 9
   },
   {
+    "CategoryId": 3,
+    "PropertyId": 5
+  },
+  {
+    "CategoryId": 3,
+    "PropertyId": 3
+  },
+  {
+    "CategoryId": 3,
+    "PropertyId": 15
+  },
+  {
+    "CategoryId": 4,
+    "PropertyId": 3
+  },
+  {
+    "CategoryId": 4,
+    "PropertyId": 4
+  },
+  {
+    "CategoryId": 4,
+    "PropertyId": 6
+  },
+  {
+    "CategoryId": 4,
+    "PropertyId": 9
+  },
+  {
+    "CategoryId": 4,
+    "PropertyId": 11
+  },
+  {
+    "CategoryId": 4,
+    "PropertyId": 14
+  },
+
+  {
     "CategoryId": 5,
     "PropertyId": 10
   },

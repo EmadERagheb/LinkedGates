@@ -30,6 +30,7 @@ namespace Data.Helper
             #region Category DTO
 
             CreateMap<Category, GetCategoryDTO>();
+            CreateMap<Category, GetCategoryForSelectionDTO>();
             #endregion
             #region Property DTO
             CreateMap<Property, GetPropertyDTO>();

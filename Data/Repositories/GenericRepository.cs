@@ -19,7 +19,7 @@ namespace Data.Repositories
             context.AddRange(entities);
         }
 
-        public async Task<IEnumerable<TResult>> GetAllAsync<TResult>(int pageNumber, int pageSize, Expression<Func<T, bool>>? filter, Expression<Func<T, object>>? order, params string[] properties)
+        public async Task<IEnumerable<TResult>> GetAllAsync<TResult>(int pageNumber, int pageSize, Expression<Func<T, bool>>? filter=default, Expression<Func<T, object>>? order=default, params string[] properties)
         {
             IQueryable<T> query = context.Set<T>();
             if (filter is not null)
@@ -32,8 +32,9 @@ namespace Data.Repositories
             }
             if (order is not null)
             {
-                query = query.OrderBy(order);
+                query = query.OrderByDescending(order);
             }
+          
             query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
             if (typeof(T) != typeof(TResult))
             {
@@ -84,7 +85,7 @@ namespace Data.Repositories
 
         }
 
-        public async Task<int> GetCountAsync(Expression<Func<T, bool>>? filter)
+        public async Task<int> GetCountAsync(Expression<Func<T, bool>>? filter=default)
         {
             IQueryable<T> query = context.Set<T>();
             if (filter is not null)
