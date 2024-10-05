@@ -9,7 +9,7 @@ namespace Domain.Models
     public class Property: BaseDomainModel
     {
         public int Id { get; set; }
-        public string? Description { get; set; }
+        public required string Description { get; set; }
 
 
 

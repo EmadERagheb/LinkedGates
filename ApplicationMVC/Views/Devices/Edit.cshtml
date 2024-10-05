@@ -1,59 +1,79 @@
-﻿@model Domain.Models.Device
+﻿@using Domain.DTOs
+@model GetDetailedDeviceDTO
 
 @{
     ViewData["Title"] = "Edit";
 }
-
-<h1>Edit</h1>
-
-<h4>Device</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Edit Device</h2>
+        </div>
+        <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CategoryId" />
+            <input type="hidden" asp-for="CategoryName"  />
+            <div class="row">
+           <div class="col-12 col-md-6">
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
+                </div>
+          <div class="col-12 col-md-6">
             <div class="form-group">
                 <label asp-for="SerialNumber" class="control-label"></label>
                 <input asp-for="SerialNumber" class="form-control" />
                 <span asp-validation-for="SerialNumber" class="text-danger"></span>
             </div>
+           </div>
+
+     
+           <div class="col-12 col-md-6">
             <div class="form-group">
                 <label asp-for="Memo" class="control-label"></label>
-                <input asp-for="Memo" class="form-control" />
+                <textarea asp-for="Memo" class="form-control"></textarea>
                 <span asp-validation-for="Memo" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedDate" class="control-label"></label>
-                <input asp-for="UpdatedDate" class="form-control" />
-                <span asp-validation-for="UpdatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+           </div>
+
+            <h3 class="my-3">Properties</h3>
+            @for (int i = 0; i < Model.Properties?.Count; i++)
+            {
+               <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="Properties[i].Value" class="control-label">@Model.Properties[i].PropertyName</label>
+                    <input asp-for="Properties[i].Value" class="form-control" />
+                    <span asp-validation-for="Properties[i].Value" class="text-danger"></span>
+                    <input type="hidden" asp-for="Properties[i].PropertyId" />
+                    <input type="hidden" asp-for="Properties[i].PropertyName" />
+                </div>
+                </div>
+            }
+
+            <div class="row mt-3">
+                <div class=" col-md-6 col-12">
+                    <div class="d-grid">
+                        <input type="submit" value="Update" class="btn btn-outline-primary rounded-2" />
+                    </div>
+                    </div>
+                <div class=" col-md-6 col-12">
+
+                    <div class="d-grid">
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Back</a>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  
+                </div>
+                </div>
+         
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+

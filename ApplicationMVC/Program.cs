@@ -64,7 +64,7 @@ namespace ApplicationMVC
             #region Insure Database Exists And Seed It Before Run Application
             using var scope = app.Services.CreateScope();
             var service = scope.ServiceProvider;
-            if (!app.Environment.IsProduction())
+            if (app.Environment.IsProduction())
             {
                 var context = service.GetRequiredService<DefaultDbContext>();
                 var logger = service.GetRequiredService<ILogger<Program>>();

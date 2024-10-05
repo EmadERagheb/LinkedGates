@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using ApplicationMVC.ViewModels;
 using Data.Contexts.Default;
-using Domain.Models;
 using Data.Contracts;
 using Domain.DTOs;
+using Domain.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationMVC.Controllers
 {
-    public class DevicesController(DefaultDbContext context, IUnitOfWork<DefaultDbContext> unitOfWork) : Controller
+    public class DevicesController(IUnitOfWork<DefaultDbContext> unitOfWork) : Controller
     {
 
         // GET: Devices 
         public async Task<IActionResult> Index()
         {
             //var defaultDbContext = _context.Devices.Include(d => d.Category);
-            var devices= await unitOfWork.Repository<Device>().GetAllAsync<GetDeviceDTO>();
+            var devices = await unitOfWork.Repository<Device>().GetAllAsync<GetDeviceDTO>();
             return View(devices);
         }
 
@@ -31,9 +27,8 @@ namespace ApplicationMVC.Controllers
                 return NotFound();
             }
 
-            var device = await context.Devices
-                .Include(d => d.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var device = await unitOfWork.Repository<Device>().GetAsync<GetDetailedDeviceDTO>(d => d.Id == id);
+
             if (device == null)
             {
                 return NotFound();
@@ -41,45 +36,85 @@ namespace ApplicationMVC.Controllers
 
             return View(device);
         }
-
-        // GET: Devices/Create
-        public IActionResult Create()
+        [HttpGet("Devices/GetCategoryProperties")]
+        public async Task<IActionResult> GetCategoryProperties([FromQuery] int categoryId)
         {
-            ViewData["CategoryId"] = new SelectList(context.Categories, "Id", "Name");
+            var category = await unitOfWork.Repository<Category>().GetAsync<GetCategoryDTO>(c => c.Id == categoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return Json(category.Properties);
+        }
+        // GET: Devices/Create
+        public async Task<IActionResult> Create()
+        {
+            var categories = await unitOfWork.Repository<Category>().GetAllAsync<GetCategoryDTO>();
+            ViewData["Categories"] = categories;
             return View();
         }
 
-        // POST: Devices/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,CategoryId,SerialNumber,Memo,Version,CreatedDate,UpdatedDate")] Device device)
+        public async Task<IActionResult> Create(PostDeviceDTO deviceDTO, List<DevicePropertyViewModel> Properties)
         {
             if (ModelState.IsValid)
             {
-                context.Add(device);
-                await context.SaveChangesAsync();
+                var device = new Device
+                {
+                    Name = deviceDTO.Name,
+                    CategoryId = deviceDTO.CategoryId,
+                    SerialNumber = deviceDTO.SerialNumber,
+                    Memo = deviceDTO.Memo,
+                    DeviceProperties = []
+                };
+                foreach (var prop in Properties)
+                {
+                    if (!string.IsNullOrEmpty(prop.Value))
+                    {
+                        device.DeviceProperties.Add(new DeviceProperty { PropertyId = prop.PropertyId, Value = prop.Value });
+                    }
+                }
+                unitOfWork.Repository<Device>().Add(device);
+                await unitOfWork.CompleteAsync();
+                TempData["success"] = "Created successfully";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(context.Categories, "Id", "Name", device.CategoryId);
-            return View(device);
+
+
+            var categories = await unitOfWork.Repository<Category>().GetAllAsync<GetCategoryDTO>();
+            ViewData["Categories"] = categories;
+            return View(deviceDTO);
         }
 
         // GET: Devices/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var device = await context.Devices.FindAsync(id);
-            if (device == null)
+            var device = await unitOfWork.Repository<Device>().GetAsync<GetDetailedDeviceDTO>(d => d.Id == id, false, nameof(Device.DeviceProperties));
+            if (device is null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(context.Categories, "Id", "Name", device.CategoryId);
+            var deviceCategoryAllProperties = await unitOfWork.Repository<Property>().GetAllAsync<GetPropertyDTO>(c => c.Categories.Any(c => c.Id == device.CategoryId));
+            if (deviceCategoryAllProperties is null)
+            {
+                return NotFound();
+            };
+            if (device.Properties is null)
+            {
+                device.Properties = [];
+            }
+            var newDeviceProperties = deviceCategoryAllProperties.Select(dva => new GetDevicePropertiesDTO { PropertyId = dva.Id, Value = "", PropertyName = dva.Description }).Where(dp => !device.Properties.Any(d => d.PropertyId == dp.PropertyId));
+            device.Properties.AddRange(newDeviceProperties);
             return View(device);
         }
 
@@ -88,35 +123,68 @@ namespace ApplicationMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CategoryId,SerialNumber,Memo,Version,CreatedDate,UpdatedDate")] Device device)
+        public async Task<IActionResult> Edit(int id, GetDetailedDeviceDTO deviceDTo)
         {
-            if (id != device.Id)
+            if (id != deviceDTo.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+                var device = await unitOfWork.Repository<Device>().GetAsync<Device>(d => d.Id == id, true, nameof(Device.DeviceProperties));
+                //update old properties
+                if (device != null)
                 {
-                    context.Update(device);
-                    await context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DeviceExists(device.Id))
+                    device.SerialNumber = deviceDTo.SerialNumber;
+                    device.Memo = deviceDTo.Memo;
+                    device.Name = deviceDTo.Name;
+
+                    // device has no properties
+                    if (device.DeviceProperties is null && deviceDTo.Properties?.Any() is true)
                     {
-                        return NotFound();
+                        device.DeviceProperties = [];
+                        device.DeviceProperties.AddRange(deviceDTo.Properties.Select(p => new DeviceProperty { PropertyId = p.PropertyId, Value = p.Value, DeviceId = device.Id }));
                     }
-                    else
+                    else if (deviceDTo.Properties?.Any() is true && device.DeviceProperties is not null)
                     {
-                        throw;
+                        var oldProperties = device.DeviceProperties;
+                        foreach (var prop in deviceDTo.Properties)
+                        {
+                            var oldProp = oldProperties.FirstOrDefault(p => p.PropertyId == prop.PropertyId);
+                            if (oldProp != null)
+                            {
+                                oldProp.Value = prop.Value;
+                            }
+                            else
+                            {
+                                device.DeviceProperties.Add(new DeviceProperty { PropertyId = prop.PropertyId, Value = prop.Value, DeviceId = device.Id });
+                            }
+                        }
                     }
+
+                    try
+                    {
+                        unitOfWork.Repository<Device>().Modify(device);
+                        await unitOfWork.CompleteAsync();
+                        TempData["success"] = "updated successfully";
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!await DeviceExists(device.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["CategoryId"] = new SelectList(context.Categories, "Id", "Name", device.CategoryId);
-            return View(device);
+            return View(deviceDTo);
         }
 
         // GET: Devices/Delete/5
@@ -127,9 +195,7 @@ namespace ApplicationMVC.Controllers
                 return NotFound();
             }
 
-            var device = await context.Devices
-                .Include(d => d.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var device = await unitOfWork.Repository<Device>().GetAsync<Device>(d => d.Id == id);
             if (device == null)
             {
                 return NotFound();
@@ -143,19 +209,21 @@ namespace ApplicationMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var device = await context.Devices.FindAsync(id);
+            var device = await unitOfWork.Repository<Device>().GetAsync<Device>(d => d.Id == id);
             if (device != null)
             {
-                context.Devices.Remove(device);
+               unitOfWork.Repository<Device>().Remove(device);
             }
 
-            await context.SaveChangesAsync();
+            await unitOfWork.CompleteAsync();
+            TempData["success"] = "Deleted successfully";
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DeviceExists(int id)
+        private async Task<bool> DeviceExists(int id)
         {
-            return context.Devices.Any(e => e.Id == id);
+            return await unitOfWork.Repository<Device>().IsExistAsync(d => d.Id == id);
         }
     }
+
 }

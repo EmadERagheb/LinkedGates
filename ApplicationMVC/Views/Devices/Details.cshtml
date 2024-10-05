@@ -1,60 +1,83 @@
-﻿@model Domain.Models.Device
+﻿@model GetDetailedDeviceDTO
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2>Device Details</h2>
+        </div>
+        <div class="col-12">
+            
+                <dl class="row">
+                    <dt class="col-sm-3">ID</dt>
+                    <dd class="col-sm-9">@Model.Id</dd>
 
-<div>
-    <h4>Device</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SerialNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SerialNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Memo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Memo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Version)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Version)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UpdatedDate)
-        </dd>
-    </dl>
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Serial Number</dt>
+                    <dd class="col-sm-9">@Model.SerialNumber</dd>
+
+                    <dt class="col-sm-3">Category</dt>
+                    <dd class="col-sm-9">@Model.CategoryName</dd>
+
+                    <dt class="col-sm-3">Category ID</dt>
+                    <dd class="col-sm-9">@Model.CategoryId</dd>
+
+                    <dt class="col-sm-3">Memo</dt>
+                    <dd class="col-sm-9">@(Model.Memo ?? "N/A")</dd>
+                </dl>
+
+                <h3>Properties</h3>
+                @if (Model.Properties.Any())
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var property in Model.Properties)
+                            {
+                                @if(property.Value != null)
+                                {
+                                    
+                                <tr>
+                                    <td>@property.PropertyName</td>
+                                    <td>@property.Value</td>
+                                </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No properties available.</p>
+                }
+            </div>
+            <div class="row">
+            <div class="col-md-6 col-12 pe-md-1 pe-0 mb-3" >
+                <div class="d-grid mx-0">
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-primary rounded-2">Edit</a>
+
+                </div>
+            </div>
+            <div class="col-md-6 col-12 mx-0 ps-md-1 pe-0 mb-3">
+                <div class="d-grid ">
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
+
+
+

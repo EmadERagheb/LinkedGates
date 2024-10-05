@@ -1,10 +1,111 @@
-﻿@model Domain.Models.Device
+﻿@using Domain.DTOs
+@model Domain.DTOs.PostDeviceDTO
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<div class="container">
+        <form asp-action="Create" method="post">
+    <div class="row">
+
+      
+            <div class="col-md-6 col-12 mx-0">
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-12 mx-0">
+                <div class="form-group mb-3">
+                    <label asp-for="SerialNumber" class="control-label"></label>
+                    <input asp-for="SerialNumber" class="form-control" />
+                    <span asp-validation-for="SerialNumber  " class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 mx-0">
+
+                <div class="form-group mb-3">
+                <label asp-for="CategoryId" class="control-label">Category</label>
+                <select asp-for="CategoryId" class="form-control" id="categorySelect">
+                    <option value="">-- Select Category --</option>
+                    @foreach (var category in (List<GetCategoryDTO>)ViewData["Categories"]!)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            </div>
+
+            <div class="col-md-6 col-12 mx-0 ">
+                <div class="form-group mb-3">
+                <label asp-for="Memo" class="control-label"></label>
+                <textarea asp-for="Memo" class="form-control"></textarea>
+                <span asp-validation-for="Memo" class="text-danger"></span>
+            </div>
+            </div>
+
+            <div id="propertyFields" ></div>
+            <div class="col-md-6 col-12">
+                <div class="d-grid">
+                    <input type="submit" value="Create" class="btn btn-outline-primary rounded-2" />
+                </div>
+            </div> 
+            <div class="col-md-6 col-12">
+                <div class="d-grid">
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Back</a>
+                </div>
+            </div>
+          
+    
+    </div>
+       </form>
+</div>
+
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#categorySelect').change(function () {
+                var categoryId = $(this).val();
+                if (categoryId) {
+                    $.ajax({
+                        url: '/Devices/GetCategoryProperties',
+                        type: 'GET',
+                        data: { categoryId: categoryId },
+                        success: function (properties) {
+                            var propertyFields = $('#propertyFields');
+                            propertyFields.empty();
+                            $.each(properties, function (index, property) {
+                                propertyFields.append(
+
+                                    '<div class="form-group mb-3 mx-0">' +
+                                    '<label class="control-label">' + property.description + '</label>' +
+                                    '<input type="text" name="Properties[' + index + '].Value" class="form-control" />' +
+                                    '<input type="hidden" name="Properties[' + index + '].PropertyId" value="' + property.id + '" />' +
+                                    '</div>'
+                                   
+                                );
+                            });
+                        }
+                    });
+                } else {
+                    $('#propertyFields').empty();
+                }
+            });
+        });
+    </script>
+}
+
+
+@* <h1>Create</h1>
 
 <h4>Device</h4>
 <hr />
@@ -47,11 +148,11 @@
         </form>
     </div>
 </div>
-
-<div>
+ *@
+@* <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+} *@

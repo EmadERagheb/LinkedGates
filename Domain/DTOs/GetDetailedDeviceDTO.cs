@@ -4,22 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace Domain.DTOs
 {
-    public class Device : BaseDomainModel
+    public class GetDetailedDeviceDTO
     {
         public int Id { get; set; }
         public required string Name { get; set; }
-
-        public int CategoryId { get; set; }
-
         public required string SerialNumber { get; set; }
-
+        public int CategoryId { get; set; }
+        public required string CategoryName { get; set; }
         public string? Memo { get; set; }
-        public Category Category { get; set; }=null!;
 
-        public List<Property> Properties { get; set; } = [];
+        public List<GetDevicePropertiesDTO>? Properties { get; set; } 
 
-        public List<DeviceProperty>? DeviceProperties { get; set; } 
     }
 }
