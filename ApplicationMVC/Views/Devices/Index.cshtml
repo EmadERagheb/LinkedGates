@@ -21,18 +21,26 @@
     </div>
     <div class="row">
         <div class="col">
-            <form asp-action="Index" method="post">
+            <form asp-action="Index" method="get">
                 <div class="d-flex flex-row justify-content-between">
                     <div class="d-flex flex-row">
                         <div class="mb-3 me-3">
-                            <input type="text" class="form-control" placeholder="Search by Name" name="searchString" value="@ViewData["CurrentFilter"]" />
+                            <input type="text" class="form-control" placeholder="Search by Name" name="searchString" value="@ViewData["searchString"]" />
                         </div>
                         <div class="mb-3">
                             <select class="form-select" name="category" id="category">
                                 <option value="0">All</option>
                                 @foreach (var item in ViewData["Categories"] as List<GetCategoryForSelectionDTO>)
                                 {
-                                    <option value="@item.Id">@item.Name</option>
+                                    @if(item.Id == (int)ViewData["selectedCategoryId"])
+                                    {
+                                        <option value="@item.Id" selected>@item.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                  
                                 }
                             </select>
                         </div>
@@ -41,7 +49,11 @@
                         <button type="submit" class="btn btn-outline-primary border-0 rounded-start-2">
                             <i class="bi bi-search"></i> Search
                         </button>
-                        <button asp-action="Index" class="btn btn-outline-secondary text-black border-0 rounded-end-2">Reset</button>
+                        <a asp-action="Index" 
+                          asp-route-category=""
+                   asp-route-searchString=""
+                  
+                        class="btn btn-outline-secondary text-black border-0 rounded-end-2">Reset</a>
                     </div>
                 </div>
             </form>
@@ -110,14 +122,20 @@
             @for (int i = 1; i <= Model.TotalPages; i++)
             {
                 <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                    <a class="page-link" asp-action="Index" 
+                    asp-route-category="@ViewData["selectedCategoryId"]"
+                   asp-route-searchString="@ViewData["searchString"]"
+                   asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
                 </li>
             }
 
             @if (Model.HasNextPage)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                    <a class="page-link" asp-action="Index" 
+                         asp-route-category="@ViewData["selectedCategoryId"]"
+                       asp-route-searchString="@ViewData["searchString"]"
+                    asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
                 </li>
             }
             else
@@ -138,110 +156,5 @@
 
 
 
-
-
-@* <div class="container">
-
-    <div class="row py-3">
-        <div class="col">
-            <h2 class="text-primary">Devices List</h2>
-        </div>
-        <div class="col text-end">
-            <a class="btn btn-primary rounded-2 shadow" asp-controller="Devices" asp-action="Create">
-                <i class="bi bi-plus-circle"></i> Create New Device
-            </a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <form asp-action="Index" method="post">
-                <div class="d-flex flex-row justify-content-between">
-                    <div class="d-flex flex-row">
-
-                        <div class=" mb-3 me-3">
-                            <input type="text" class="form-control" placeholder="Search by Name" name="searchString" value="@ViewData["CurrentFilter"]" />
-                        </div>
-                        <div class=" mb-3">
-                            <select class="form-select" name="category" id="category">
-                                <option value="0">All</option>
-                                @foreach (var item in ViewData["Categories"] as List<GetCategoryForSelectionDTO>)
-                                {
-                                    <option value="@item.Id">@item.Name</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class=" btn-group shadow rounded-2 mb-3 ">
-                        <button type="submit" class="btn btn-outline-primary  border-0 rounded-start-2 "><i class="bi bi-search"></i> Search</button>
-                        <button asp-action="Index" class="btn btn-outline-secondary text-black border-0 rounded-end-2 ">Reset</button>
-
-                    </div>
-                </div>
-
-
-            </form>
-        </div>
-    </div>
-    <div class="row py-3">
-        <div class="col-12">
-            <div class="mx-0">
-                <table class="table table-borderd table-striped mx-0 px-0 ">
-                    <thead>
-                        <tr>
-                            <th>
-                                #
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Name)
-                            </th>
-                            <th>
-                                Serial Number
-                            </th>
-                            <th>
-                                Category
-                            </th>
-
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            int counter = 0;
-                        }
-                        @foreach (var item in Model)
-                        {
-                            counter++;
-                            <tr>
-                                <td>
-                                    @counter
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.SerialNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CategoryName)
-                                </td>
-                                <td>
-                                    <div class="">
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info text-white p-2 my-2 rounded-2  "><i class="bi bi-person-circle"></i>  Details</a>
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mx-2 p-2 my-2 rounded-2"><i class="bi bi-pencil-square"></i> Edit</a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger p-2 my-2 rounded-2"><i class="bi bi-trash-fill"></i> Delete</a>
-                                    </div>
-
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-</div> *@
 
 

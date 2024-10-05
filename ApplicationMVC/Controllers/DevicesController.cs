@@ -13,38 +13,64 @@ namespace ApplicationMVC.Controllers
     public class DevicesController(IUnitOfWork<DefaultDbContext> unitOfWork) : Controller
     {
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5)
+        //public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5)
+        //{
+        //    //var defaultDbContext = _context.Devices.Include(d => d.Category);
+        //    var categories = await unitOfWork.Repository<Category>().GetAllAsync<GetCategoryForSelectionDTO>();
+        //    var devices = await unitOfWork.Repository<Device>().GetAllAsync<GetDeviceDTO>(pageNumber, pageSize,order:d=>d.Id);
+        //    var totalCount = await unitOfWork.Repository<Device>().GetCountAsync();
+        //    var devicesPages = new Paging<GetDeviceDTO>(devices, totalCount, pageNumber, pageSize);
+        //    ViewData["Categories"] = categories;
+        //    return View(devicesPages);
+        //}
+        //[HttpPost]
+
+        //public async Task<IActionResult> Index(IFormCollection? collection, int pageNumber = 1, int pageSize = 5)
+        //{
+
+
+        //    var selectedCategoryId = int.Parse(collection["category"]!);
+        //    string searchString = collection["searchString"].ToString();
+        //    Expression<Func<Device, bool>> filter = q =>
+        //    (string.IsNullOrEmpty(searchString) || q.Name.ToLower().Contains(searchString.ToLower())) &&
+        //    (selectedCategoryId == 0 || q.CategoryId == selectedCategoryId);
+        //    var devices = await unitOfWork.Repository<Device>().GetAllAsync<GetDeviceDTO>(pageNumber, pageSize,filter, order: d => d.Id);
+        //    var totalCount = await unitOfWork.Repository<Device>().GetCountAsync(filter);
+        //    var devicesPages = new Paging<GetDeviceDTO>(devices, totalCount, pageNumber, pageSize);
+
+        //    var categories = await unitOfWork.Repository<Category>().GetAllAsync<GetCategoryForSelectionDTO>();
+        //    ViewData["Categories"] = categories;
+        //    ViewData["searchString"] = searchString;
+        //    ViewData["selectedCategoryId"] = selectedCategoryId;
+        //    return View(devicesPages);
+
+
+
+
+        //}
+        [HttpGet]
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5, string searchString = "", int category = 0)
         {
-            //var defaultDbContext = _context.Devices.Include(d => d.Category);
-            var categories = await unitOfWork.Repository<Category>().GetAllAsync<GetCategoryForSelectionDTO>();
-            var devices = await unitOfWork.Repository<Device>().GetAllAsync<GetDeviceDTO>(pageNumber, pageSize,order:d=>d.Id);
-            var totalCount = await unitOfWork.Repository<Device>().GetCountAsync();
-            var devicesPages = new Paging<GetDeviceDTO>(devices, totalCount, pageNumber, pageSize);
-            ViewData["Categories"] = categories;
-            return View(devicesPages);
-        }
-        [HttpPost]
 
-        public async Task<IActionResult> Index(IFormCollection collection, int pageNumber = 1, int pageSize = 5)
-        {
+   
 
 
-            var selectedCategoryId = int.Parse(collection["category"]!);
-            string searchString = collection["searchString"].ToString();
+
             Expression<Func<Device, bool>> filter = q =>
-            (string.IsNullOrEmpty(searchString) || q.Name.ToLower().Contains(searchString.ToLower())) &&
-            (selectedCategoryId == 0 || q.CategoryId == selectedCategoryId);
-            var devices = await unitOfWork.Repository<Device>().GetAllAsync<GetDeviceDTO>(pageNumber, pageSize, order: d => d.Id);
-            var totalCount = await unitOfWork.Repository<Device>().GetCountAsync();
+                (string.IsNullOrEmpty(searchString) || q.Name.ToLower().Contains(searchString.ToLower())) &&
+                (category == 0 || q.CategoryId == category);
+
+            var devices = await unitOfWork.Repository<Device>().GetAllAsync<GetDeviceDTO>(pageNumber, pageSize, filter, order: d => d.Id);
+            var totalCount = await unitOfWork.Repository<Device>().GetCountAsync(filter);
             var devicesPages = new Paging<GetDeviceDTO>(devices, totalCount, pageNumber, pageSize);
 
             var categories = await unitOfWork.Repository<Category>().GetAllAsync<GetCategoryForSelectionDTO>();
+
             ViewData["Categories"] = categories;
+            ViewData["searchString"] = searchString;
+            ViewData["selectedCategoryId"] = category;
+
             return View(devicesPages);
-
-
-
-
         }
 
         // GET: Devices/Details/5
